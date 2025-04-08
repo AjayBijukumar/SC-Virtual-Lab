@@ -47,7 +47,7 @@
     .search {
       margin-bottom: 1rem;
     }
-    input[type="text"], input[type="password"] {
+    input[type="text"], input[type="password"], input[type="number"] {
       padding: 0.5rem;
       width: 100%;
       margin-bottom: 1rem;
@@ -61,9 +61,17 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
     }
     button:hover {
       background-color: #0056b3;
+    }
+    button.secondary {
+      background-color: #6c757d;
+    }
+    button.secondary:hover {
+      background-color: #5a6268;
     }
     img.diagram {
       max-width: 100%;
@@ -163,6 +171,47 @@
       border-left: 2px solid #007BFF;
       height: 1rem;
     }
+    /* Demo section styles */
+    .demo-section {
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 1px solid #dee2e6;
+    }
+    .demo-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #004080;
+    }
+    .demo-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .demo-input, .demo-output {
+      flex: 1;
+      min-width: 250px;
+    }
+    .demo-output {
+      background: white;
+      padding: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      min-height: 100px;
+    }
+    .typing-animation {
+      border-right: 2px solid;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: #007BFF }
+    }
+    .highlight {
+      background-color: #fff3cd;
+      transition: background-color 0.5s;
+    }
   </style>
 </head>
 <body>
@@ -240,6 +289,20 @@
           <div class="flow-box">Original Plaintext</div>
         </div>
       </div>`,
+      demo: `
+      <div class="demo-section">
+        <div class="demo-title">Caesar Cipher Demo</div>
+        <div class="demo-container">
+          <div class="demo-input">
+            <input type="text" id="caesarInput" placeholder="Enter text to encrypt" class="caesar-input">
+            <input type="number" id="caesarShift" placeholder="Shift value (e.g., 3)" min="1" max="25" value="3">
+            <button onclick="runCaesarCipher()">Encrypt</button>
+            <button onclick="runCaesarDecrypt()" class="secondary">Decrypt</button>
+          </div>
+          <div class="demo-output" id="caesarOutput"></div>
+        </div>
+      </div>
+      `,
       viva: ["What is Caesar Cipher?", "Is Caesar Cipher secure? Why or why not?"]
     },
     {
@@ -257,6 +320,18 @@
         <div class="flow-step">SHA256 Algorithm</div>
         <div class="flow-step">256-bit Hash Value</div>
       </div>`,
+      demo: `
+      <div class="demo-section">
+        <div class="demo-title">SHA256 Hashing Demo</div>
+        <div class="demo-container">
+          <div class="demo-input">
+            <input type="text" id="hashInput" placeholder="Enter text to hash" class="hash-input">
+            <button onclick="runHash()">Generate Hash</button>
+          </div>
+          <div class="demo-output" id="hashOutput"></div>
+        </div>
+      </div>
+      `,
       viva: ["What is a hash function?", "Can SHA256 be reversed?"]
     },
     {
@@ -278,6 +353,20 @@
           <div class="flow-box">Plaintext</div>
         </div>
       </div>`,
+      demo: `
+      <div class="demo-section">
+        <div class="demo-title">XOR Encryption Demo</div>
+        <div class="demo-container">
+          <div class="demo-input">
+            <input type="text" id="xorInput" placeholder="Enter text to encrypt">
+            <input type="text" id="xorKey" placeholder="Encryption key">
+            <button onclick="runXorEncrypt()">Encrypt</button>
+            <button onclick="runXorDecrypt()" class="secondary">Decrypt</button>
+          </div>
+          <div class="demo-output" id="xorOutput"></div>
+        </div>
+      </div>
+      `,
       viva: ["What is XOR?", "Is XOR secure on its own?"]
     },
     {
@@ -302,6 +391,19 @@
         <div class="flow-step">Verify with Public Key</div>
         <div class="flow-step">Valid/Invalid</div>
       </div>`,
+      demo: `
+      <div class="demo-section">
+        <div class="demo-title">Digital Signature Demo</div>
+        <div class="demo-container">
+          <div class="demo-input">
+            <input type="text" id="signatureInput" placeholder="Enter message to sign">
+            <button onclick="runSignMessage()">Sign Message</button>
+            <button onclick="runVerifySignature()" class="secondary">Verify Signature</button>
+          </div>
+          <div class="demo-output" id="signatureOutput"></div>
+        </div>
+      </div>
+      `,
       viva: ["What is a digital signature?", "How is integrity ensured?"]
     },
     {
@@ -340,6 +442,19 @@
         <div class="flow-step">MAC Value</div>
         <div class="flow-step">Verification</div>
       </div>`,
+      demo: `
+      <div class="demo-section">
+        <div class="demo-title">HMAC Demo</div>
+        <div class="demo-container">
+          <div class="demo-input">
+            <input type="text" id="hmacInput" placeholder="Enter message">
+            <input type="text" id="hmacKey" placeholder="Secret key">
+            <button onclick="runHmac()">Generate MAC</button>
+          </div>
+          <div class="demo-output" id="hmacOutput"></div>
+        </div>
+      </div>
+      `,
       viva: ["What is a MAC?", "How is MAC different from digital signatures?"]
     }
   ];
@@ -369,6 +484,7 @@
         <p>${exp.result}</p>
         <strong>Diagram:</strong>
         ${exp.diagram}
+        ${exp.demo || ''}
         <strong>Viva Questions:</strong>
         <ul>${exp.viva.map(q => `<li>${q}</li>`).join('')}</ul>
       </div>
@@ -406,6 +522,241 @@
       const scrollTo = element.querySelector('.experiment-details');
       scrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  // Demo Functions
+  function animateOutput(element, text, callback) {
+    element.innerHTML = '';
+    element.classList.add('typing-animation');
+    let i = 0;
+    const speed = 20;
+    
+    function typeWriter() {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      } else {
+        element.classList.remove('typing-animation');
+        if (callback) callback();
+      }
+    }
+    typeWriter();
+  }
+
+  function highlightResult(element) {
+    element.classList.add('highlight');
+    setTimeout(() => {
+      element.classList.remove('highlight');
+    }, 2000);
+  }
+
+  // Caesar Cipher Functions
+  function caesarCipher(text, shift, decrypt = false) {
+    if (decrypt) shift = (26 - shift) % 26;
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+      let char = text[i];
+      if (char.match(/[a-z]/i)) {
+        const code = text.charCodeAt(i);
+        if (code >= 65 && code <= 90) {
+          char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+        } else if (code >= 97 && code <= 122) {
+          char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+        }
+      }
+      result += char;
+    }
+    return result;
+  }
+
+  function runCaesarCipher() {
+    const input = document.getElementById('caesarInput').value;
+    const shift = parseInt(document.getElementById('caesarShift').value) || 3;
+    const output = document.getElementById('caesarOutput');
+    
+    if (!input) {
+      output.textContent = 'Please enter some text';
+      return;
+    }
+    
+    const result = caesarCipher(input, shift);
+    animateOutput(output, `Encrypted Text: ${result}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  function runCaesarDecrypt() {
+    const input = document.getElementById('caesarInput').value;
+    const shift = parseInt(document.getElementById('caesarShift').value) || 3;
+    const output = document.getElementById('caesarOutput');
+    
+    if (!input) {
+      output.textContent = 'Please enter some text';
+      return;
+    }
+    
+    const result = caesarCipher(input, shift, true);
+    animateOutput(output, `Decrypted Text: ${result}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  // SHA256 Hashing Function
+  async function sha256(message) {
+    // Encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);
+    // Hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    // Convert to hex
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function runHash() {
+    const input = document.getElementById('hashInput').value;
+    const output = document.getElementById('hashOutput');
+    
+    if (!input) {
+      output.textContent = 'Please enter some text';
+      return;
+    }
+    
+    output.textContent = 'Calculating hash...';
+    const hash = await sha256(input);
+    animateOutput(output, `SHA256 Hash:\n${hash}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  // XOR Encryption Functions
+  function xorEncryptDecrypt(text, key, decrypt = false) {
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+      const keyChar = key.charCodeAt(i % key.length);
+      const textChar = text.charCodeAt(i);
+      result += String.fromCharCode(textChar ^ keyChar);
+    }
+    return result;
+  }
+
+  function runXorEncrypt() {
+    const input = document.getElementById('xorInput').value;
+    const key = document.getElementById('xorKey').value;
+    const output = document.getElementById('xorOutput');
+    
+    if (!input || !key) {
+      output.textContent = 'Please enter both text and key';
+      return;
+    }
+    
+    const result = xorEncryptDecrypt(input, key);
+    animateOutput(output, `Encrypted Text: ${result}\n\nHex: ${Array.from(result).map(c => 
+      c.charCodeAt(0).toString(16).padStart(2, '0')).join(' ')}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  function runXorDecrypt() {
+    const input = document.getElementById('xorInput').value;
+    const key = document.getElementById('xorKey').value;
+    const output = document.getElementById('xorOutput');
+    
+    if (!input || !key) {
+      output.textContent = 'Please enter both text and key';
+      return;
+    }
+    
+    const result = xorEncryptDecrypt(input, key);
+    animateOutput(output, `Decrypted Text: ${result}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  // Digital Signature Functions
+  let storedSignature = null;
+
+  async function runSignMessage() {
+    const input = document.getElementById('signatureInput').value;
+    const output = document.getElementById('signatureOutput');
+    
+    if (!input) {
+      output.textContent = 'Please enter a message';
+      return;
+    }
+    
+    output.textContent = 'Signing message...';
+    storedSignature = await sha256(input);
+    animateOutput(output, `Message signed!\nSignature: ${storedSignature}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  async function runVerifySignature() {
+    const input = document.getElementById('signatureInput').value;
+    const output = document.getElementById('signatureOutput');
+    
+    if (!input) {
+      output.textContent = 'Please enter a message';
+      return;
+    }
+    
+    if (!storedSignature) {
+      output.textContent = 'Please sign a message first';
+      return;
+    }
+    
+    output.textContent = 'Verifying signature...';
+    const currentHash = await sha256(input);
+    const isValid = currentHash === storedSignature;
+    
+    animateOutput(output, 
+      `Signature ${isValid ? 'VALID' : 'INVALID'}\n\n` +
+      `Current hash: ${currentHash}\n` +
+      `Stored signature: ${storedSignature}`, () => {
+      highlightResult(output);
+    });
+  }
+
+  // HMAC Function
+  async function hmacSha256(key, message) {
+    const encoder = new TextEncoder();
+    const keyBuffer = encoder.encode(key);
+    const msgBuffer = encoder.encode(message);
+    
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyBuffer,
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    
+    const signature = await crypto.subtle.sign(
+      'HMAC',
+      cryptoKey,
+      msgBuffer
+    );
+    
+    const hashArray = Array.from(new Uint8Array(signature));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function runHmac() {
+    const input = document.getElementById('hmacInput').value;
+    const key = document.getElementById('hmacKey').value;
+    const output = document.getElementById('hmacOutput');
+    
+    if (!input || !key) {
+      output.textContent = 'Please enter both message and key';
+      return;
+    }
+    
+    output.textContent = 'Calculating HMAC...';
+    const hmac = await hmacSha256(key, input);
+    animateOutput(output, `HMAC-SHA256:\n${hmac}`, () => {
+      highlightResult(output);
+    });
   }
 </script>
 
