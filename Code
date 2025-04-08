@@ -1,1 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secured Computing Lab Manual</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f0f4f8;
+    }
+    .login, .content {
+      display: none;
+      padding: 2rem;
+    }
+    .login.active, .content.active {
+      display: block;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      color: #003366;
+    }
+    .experiment {
+      background-color: #fff;
+      border-left: 5px solid #007BFF;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .experiment:hover {
+      background-color: #eaf3ff;
+    }
+    .experiment-details {
+      display: none;
+      margin-top: 1rem;
+    }
+    .experiment.active .experiment-details {
+      display: block;
+    }
+    .search {
+      margin-bottom: 1rem;
+    }
+    input[type="text"], input[type="password"] {
+      padding: 0.5rem;
+      width: 100%;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    img.diagram {
+      max-width: 100%;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    pre {
+      background: #f8f8f8;
+      padding: 1em;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+    .experiment-details strong {
+      display: block;
+      margin-top: 1rem;
+      color: #004080;
+    }
+    /* Custom diagram styles */
+    .flow-diagram {
+      width: 100%;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+    .flow-step {
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      background: #eaf3ff;
+      border: 2px solid #007BFF;
+      border-radius: 5px;
+      position: relative;
+    }
+    .flow-step:after {
+      content: "↓";
+      display: block;
+      text-align: center;
+      color: #007BFF;
+      font-size: 1.5rem;
+    }
+    .flow-step:last-child:after {
+      display: none;
+    }
+    .flow-horizontal {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    .flow-box {
+      padding: 0.5rem;
+      background: #eaf3ff;
+      border: 2px solid #007BFF;
+      border-radius: 5px;
+      text-align: center;
+      flex: 1;
+      margin: 0 0.5rem;
+      position: relative;
+    }
+    .flow-box:after {
+      content: "→";
+      position: absolute;
+      right: -1rem;
+      color: #007BFF;
+    }
+    .flow-box:last-child:after {
+      display: none;
+    }
+    .tree-diagram {
+      margin: 1rem 0;
+    }
+    .tree-node {
+      padding: 0.5rem;
+      background: #eaf3ff;
+      border: 2px solid #007BFF;
+      border-radius: 5px;
+      text-align: center;
+      margin: 0 auto;
+      width: fit-content;
+    }
+    .tree-children {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .tree-child {
+      margin: 0 1rem;
+      position: relative;
+    }
+    .tree-child:before {
+      content: "";
+      position: absolute;
+      top: -1rem;
+      left: 50%;
+      border-left: 2px solid #007BFF;
+      height: 1rem;
+    }
+  </style>
+</head>
+<body>
 
+<div class="login active" id="loginPage">
+  <div class="container">
+    <h1>Login to Access Lab Manual</h1>
+    <input type="text" id="username" placeholder="Username"/>
+    <input type="password" id="password" placeholder="Password"/>
+    <button onclick="login()">Login</button>
+  </div>
+</div>
+
+<div class="content" id="manualPage">
+  <div class="container">
+    <h1>Secured Computing Lab Manual</h1>
+    <div class="search">
+      <input type="text" id="searchInput" onkeyup="searchExperiments()" placeholder="Search experiments...">
+    </div>
+
+    <div id="experiments"></div>
+  </div>
+</div>
+
+<script>
+  const experimentsData = [
+    {
+      title: "Experiment 1: Introduction to Security Attacks",
+      description: "Study various types of attacks: Active, Passive, DoS, DDoS, etc.",
+      theory: "Security attacks are deliberate actions aimed at compromising the security of systems.",
+      tools: "Browser, Internet",
+      steps: ["Open browser", "Search about each type of attack", "Document examples and differences"],
+      algorithm: "No specific algorithm - theoretical study.",
+      code: "// No code required for this theory-based experiment",
+      output: "Detailed comparison and classification of attacks.",
+      result: "Types of security attacks successfully studied and categorized.",
+      diagram: `<div class="tree-diagram">
+        <div class="tree-node">Security Attacks</div>
+        <div class="tree-children">
+          <div class="tree-child">
+            <div class="tree-node">Active Attacks</div>
+            <div class="tree-children">
+              <div class="tree-child"><div class="tree-node">Modification</div></div>
+              <div class="tree-child"><div class="tree-node">Fabrication</div></div>
+              <div class="tree-child"><div class="tree-node">Interruption</div></div>
+            </div>
+          </div>
+          <div class="tree-child">
+            <div class="tree-node">Passive Attacks</div>
+            <div class="tree-children">
+              <div class="tree-child"><div class="tree-node">Eavesdropping</div></div>
+              <div class="tree-child"><div class="tree-node">Traffic Analysis</div></div>
+            </div>
+          </div>
+        </div>
+      </div>`,
+      viva: ["What is the difference between Active and Passive attacks?", "What is a DDoS attack?"]
+    },
+    {
+      title: "Experiment 2: Caesar Cipher",
+      description: "Encrypt and decrypt text using Caesar Cipher technique with a fixed shift.",
+      theory: "Caesar Cipher is a substitution cipher where each letter is shifted by a fixed number of places.",
+      tools: "Python, Online Python Compiler",
+      steps: ["Choose a shift value", "Convert plaintext into encrypted text by shifting characters", "Decrypt by reversing the shift"],
+      algorithm: "Shift each character in the plaintext by a fixed number (e.g., 3 positions forward).",
+      code: `def encrypt(text, shift):\n  result = ''\n  for char in text:\n    if char.isalpha():\n      shift_base = ord('A') if char.isupper() else ord('a')\n      result += chr((ord(char) - shift_base + shift) % 26 + shift_base)\n    else:\n      result += char\n  return result\n\nprint(encrypt('HELLO', 3))` ,
+      output: "KHOOR",
+      result: "Successfully encrypted and decrypted text using Caesar Cipher.",
+      diagram: `<div class="flow-diagram">
+        <div class="flow-horizontal">
+          <div class="flow-box">Plaintext</div>
+          <div class="flow-box">Shift by N</div>
+          <div class="flow-box">Ciphertext</div>
+          <div class="flow-box">Shift back by N</div>
+          <div class="flow-box">Original Plaintext</div>
+        </div>
+      </div>`,
+      viva: ["What is Caesar Cipher?", "Is Caesar Cipher secure? Why or why not?"]
+    },
+    {
+      title: "Experiment 3: Hashing using SHA256",
+      description: "Implement and demonstrate message digest creation using SHA256.",
+      theory: "SHA256 is a cryptographic hash function that outputs a 256-bit fixed-size hash value.",
+      tools: "Python",
+      steps: ["Import hashlib", "Create a message", "Generate SHA256 hash using hashlib.sha256().hexdigest()"],
+      algorithm: "Use SHA256 hash function to generate a fixed-size digest from a message.",
+      code: `import hashlib\n\nmessage = \"Hello, Security!\"\nsha = hashlib.sha256(message.encode())\nprint(sha.hexdigest())` ,
+      output: "f5e3c105c962e795e2fc5e25337f85d0c6d58e8e13e2f79f3c59f87288bc5b33",
+      result: "Successfully generated SHA256 hash for the input message.",
+      diagram: `<div class="flow-diagram">
+        <div class="flow-step">Input Message</div>
+        <div class="flow-step">SHA256 Algorithm</div>
+        <div class="flow-step">256-bit Hash Value</div>
+      </div>`,
+      viva: ["What is a hash function?", "Can SHA256 be reversed?"]
+    },
+    {
+      title: "Experiment 4: XOR Encryption",
+      description: "Encrypt and decrypt data using XOR-based method.",
+      theory: "XOR encryption uses bitwise exclusive OR between data and key for simple encryption.",
+      tools: "Python",
+      steps: ["Define a message and a key", "Apply XOR between message and key", "Repeat to decrypt"],
+      algorithm: "cipher[i] = message[i] XOR key[i % len(key)]",
+      code: `def xor_encrypt_decrypt(message, key):\n    return ''.join(chr(ord(m) ^ ord(key[i % len(key)])) for i, m in enumerate(message))\n\nmsg = \"SECURE\"\nkey = \"KEY\"\ncipher = xor_encrypt_decrypt(msg, key)\nprint('Encrypted:', cipher)\nprint('Decrypted:', xor_encrypt_decrypt(cipher, key))` ,
+      output: "Encrypted and then decrypted string", 
+      result: "Successfully encrypted and decrypted message using XOR.",
+      diagram: `<div class="flow-diagram">
+        <div class="flow-horizontal">
+          <div class="flow-box">Plaintext</div>
+          <div class="flow-box">XOR with Key</div>
+          <div class="flow-box">Ciphertext</div>
+          <div class="flow-box">XOR with Key</div>
+          <div class="flow-box">Plaintext</div>
+        </div>
+      </div>`,
+      viva: ["What is XOR?", "Is XOR secure on its own?"]
+    },
+    {
+      title: "Experiment 5: Digital Signatures (Simulated)",
+      description: "Simulate digital signing and verification.",
+      theory: "Digital signatures verify authenticity and integrity using private-public key pairs.",
+      tools: "Python, hashlib",
+      steps: ["Create a message", "Hash the message", "Simulate signing using a key", "Verify signature by recomputing hash"],
+      algorithm: "signature = hash(message); verification = (hash(message) == signature)",
+      code: `import hashlib\nmessage = \"Verify me\"\nsignature = hashlib.sha256(message.encode()).hexdigest()\nprint('Signature:', signature)\nprint('Verified:', signature == hashlib.sha256(message.encode()).hexdigest())` ,
+      output: "Signature and verification result", 
+      result: "Successfully simulated digital signing and verification.",
+      diagram: `<div class="flow-diagram">
+        <div style="text-align: center; margin-bottom: 1rem; font-weight: bold">Signing Process</div>
+        <div class="flow-step">Message</div>
+        <div class="flow-step">Hash Function</div>
+        <div class="flow-step">Hash Value</div>
+        <div class="flow-step">Sign with Private Key</div>
+        <div class="flow-step">Digital Signature</div>
+        
+        <div style="text-align: center; margin: 1rem 0; font-weight: bold">Verification Process</div>
+        <div class="flow-step">Verify with Public Key</div>
+        <div class="flow-step">Valid/Invalid</div>
+      </div>`,
+      viva: ["What is a digital signature?", "How is integrity ensured?"]
+    },
+    {
+      title: "Experiment 6: Email Spoofing Simulation",
+      description: "Demonstrate how email spoofing can be simulated in a safe way.",
+      theory: "Email spoofing forges the email header to mislead the recipient.",
+      tools: "Online email simulator or manual header creation",
+      steps: ["Create a fake header", "Simulate sending email with forged From field"],
+      algorithm: "No real algorithm – header modification",
+      code: `From: fake@spoof.com\nTo: victim@example.com\nSubject: You won!\n\nClick this link to claim your prize.` ,
+      output: "Forged email content",
+      result: "Email spoofing structure demonstrated.",
+      diagram: `<div class="flow-diagram">
+        <div class="flow-step">Attacker</div>
+        <div class="flow-step">Create Fake Email</div>
+        <div class="flow-step">Modify Headers</div>
+        <div class="flow-step">Send to Victim</div>
+        <div class="flow-step">Victim sees Fake Sender</div>
+      </div>`,
+      viva: ["What is email spoofing?", "How can we prevent spoofing?"]
+    },
+    {
+      title: "Experiment 7: MAC (Message Authentication Code)",
+      description: "Generate a MAC using HMAC with SHA256.",
+      theory: "MAC is used to verify data integrity and authenticity using a secret key.",
+      tools: "Python, hmac, hashlib",
+      steps: ["Import hmac and hashlib", "Provide key and message", "Use hmac.new() with SHA256"],
+      algorithm: "MAC = HMAC(key, message, SHA256)",
+      code: `import hmac, hashlib\nkey = b'secret'\nmessage = b'hello'\nmac = hmac.new(key, message, hashlib.sha256).hexdigest()\nprint(mac)` ,
+      output: "Generated MAC",
+      result: "Successfully generated message authentication code.",
+      diagram: `<div class="flow-diagram">
+        <div class="flow-step">Message</div>
+        <div class="flow-step">Combine with Secret Key</div>
+        <div class="flow-step">Hash Function</div>
+        <div class="flow-step">MAC Value</div>
+        <div class="flow-step">Verification</div>
+      </div>`,
+      viva: ["What is a MAC?", "How is MAC different from digital signatures?"]
+    }
+  ];
+
+  const experimentsDiv = document.getElementById("experiments");
+  experimentsData.forEach((exp, index) => {
+    const expDiv = document.createElement("div");
+    expDiv.className = "experiment";
+    expDiv.onclick = () => toggleDetails(expDiv);
+    expDiv.innerHTML = `
+      <h3>${exp.title}</h3>
+      <p>${exp.description}</p>
+      <div class="experiment-details">
+        <strong>Theory/Introduction:</strong>
+        <p>${exp.theory}</p>
+        <strong>Tools Required:</strong>
+        <p>${exp.tools}</p>
+        <strong>Steps to Execute:</strong>
+        <ol>${exp.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+        <strong>Algorithm:</strong>
+        <p>${exp.algorithm}</p>
+        <strong>Sample Code:</strong>
+        <pre>${exp.code}</pre>
+        <strong>Sample Output:</strong>
+        <p>${exp.output}</p>
+        <strong>Result:</strong>
+        <p>${exp.result}</p>
+        <strong>Diagram:</strong>
+        ${exp.diagram}
+        <strong>Viva Questions:</strong>
+        <ul>${exp.viva.map(q => `<li>${q}</li>`).join('')}</ul>
+      </div>
+    `;
+    experimentsDiv.appendChild(expDiv);
+  });
+
+  function login() {
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    if (user && pass) {
+      document.getElementById('loginPage').classList.remove('active');
+      document.getElementById('manualPage').classList.add('active');
+    } else {
+      alert('Please enter both username and password.');
+    }
+  }
+
+  function searchExperiments() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const experiments = document.getElementsByClassName('experiment');
+    for (let i = 0; i < experiments.length; i++) {
+      let exp = experiments[i];
+      exp.style.display = exp.innerText.toLowerCase().includes(input) ? '' : 'none';
+    }
+  }
+
+  function toggleDetails(element) {
+    const all = document.querySelectorAll('.experiment');
+    all.forEach(el => {
+      if (el !== element) el.classList.remove("active");
+    });
+    element.classList.toggle("active");
+    if (element.classList.contains("active")) {
+      const scrollTo = element.querySelector('.experiment-details');
+      scrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+</script>
+
+</body>
+</html>
